@@ -1,6 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using PostgreDay.Context;
+using PostgreDay.Services.CategoryServices;
+using PostgreDay.Services.ProductServices;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var connectionString = builder.Configuration.GetConnectionString("PostgreSqlConnection");
+builder.Services.AddDbContext<PostgreContext>(opt =>
+{
+    opt.UseNpgsql(connectionString);
+});
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
